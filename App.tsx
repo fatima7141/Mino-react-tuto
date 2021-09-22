@@ -22,21 +22,31 @@ breaking down use state hooks:
     +to trigger a state change, we simply reassingn the second element of usestate's value  
  */
   const [enteredGoal, setEnteredGoal] = useState("");
-  const [courseGoals, setCourseGoals]=useState([] as string[]);
+  const [courseGoals, setCourseGoals]  = useState([] as string[]);
 
   const inputHandler_Goal = (enteredText: string) => {
     setEnteredGoal(enteredText);
-  };  //two way data binding
-  const addGoalHandler=()=>{
+  }; //two way data binding
+  const addGoalHandler = () => {
     //console.log(enteredGoal);
     //setCourseGoals([...courseGoals, enteredGoal]); somehow bad implementation
-    setCourseGoals(currentGoal=>[...currentGoal, enteredGoal])
-  };/**
-  * So courseGoal would be an empty array at first
-  * spread operator unloads all the contents of an interrable
-  * setCourseGoals would be an array as well
-  */
-
+    //we are trying to get the latest input in; function is triggered on click so no input 
+    //courseGoals will always take the former value of setCourseGoals
+    //we simply pass the old values to courseGoals
+    //let's run it:
+    /**
+     * 1-enteredGoal will be returned to the setCourseGoals so courseGoals=enteredGaol[0]
+     * 2-a new enteredGoal has been entered so thats passed to courseGoals again
+     * 3-currentGoal would receive the aggregated values of all the goals
+     * 4-so we receive the present value (aggregated former values of courseGoals) + the new value every time 
+     */
+    setCourseGoals((currentGoal) => [...currentGoal, enteredGoal]);
+  };
+  /**
+   * So courseGoal would be an empty array at first
+   * spread operator unloads all the contents of an interrable
+   * setCourseGoals would be an array as well
+   */
 
   return (
     <View style={styles.screen}>
@@ -49,15 +59,15 @@ breaking down use state hooks:
          * alignItems positions elements along the cross axis (perpendicular to main axis)
          */}
         <TextInput
-          placeholder=" Course Goal"
+          placeholder=" Course Goals"
           style={styles.textInput}
           onChangeText={inputHandler_Goal}
           value={enteredGoal}
         />
-        <Button title="ADD" onPress={addGoalHandler}/>
+        <Button title="ADD" onPress={addGoalHandler} />
       </View>
       <View>
-        
+        {courseGoals.map((goal) =><View style={styles.listItem} ><Text key={goal}>{goal}</Text></View>)}
       </View>
     </View>
   );
@@ -77,4 +87,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: "80%",
   },
+  listItem:{
+    padding:10,
+    backgroundColor:'#ccc',
+    borderBottomColor:'black',
+    borderWidth:1,
+    marginVertical:6
+
+
+  }
 });
