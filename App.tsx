@@ -1,6 +1,14 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { Button, StyleSheet, Text, View, TextInput } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  ScrollView,
+  FlatList,
+} from "react-native";
 
 export default function App() {
   //functional component
@@ -22,15 +30,15 @@ breaking down use state hooks:
     +to trigger a state change, we simply reassingn the second element of usestate's value  
  */
   const [enteredGoal, setEnteredGoal] = useState("");
-  const [courseGoals, setCourseGoals]  = useState([] as string[]);
+  const [courseGoals, setCourseGoals] = useState([] as any[]);
 
-  const inputHandler_Goal = (enteredText: string) => {
+  const inputHandler_Goal = (enteredText: any) => {
     setEnteredGoal(enteredText);
   }; //two way data binding
   const addGoalHandler = () => {
-    //console.log(enteredGoal);
+    console.log(enteredGoal);
     //setCourseGoals([...courseGoals, enteredGoal]); somehow bad implementation
-    //we are trying to get the latest input in; function is triggered on click so no input 
+    //we are trying to get the latest input in; function is triggered on click so no input
     //courseGoals will always take the former value of setCourseGoals
     //we simply pass the old values to courseGoals
     //let's run it:
@@ -38,9 +46,15 @@ breaking down use state hooks:
      * 1-enteredGoal will be returned to the setCourseGoals so courseGoals=enteredGaol[0]
      * 2-a new enteredGoal has been entered so thats passed to courseGoals again
      * 3-currentGoal would receive the aggregated values of all the goals
-     * 4-so we receive the present value (aggregated former values of courseGoals) + the new value every time 
+     * 4-so we receive the present value (aggregated former values of courseGoals) + t he new value every time
      */
-    setCourseGoals((currentGoal) => [...currentGoal, enteredGoal]);
+    setCourseGoals((currentGoal) => [
+      ...currentGoal,
+      {
+        id: Math.random().toString(),
+        value: enteredGoal,
+      },
+    ]); //flatLists require keys/objects
   };
   /**
    * So courseGoal would be an empty array at first
@@ -66,9 +80,27 @@ breaking down use state hooks:
         />
         <Button title="ADD" onPress={addGoalHandler} />
       </View>
-      <View>
-        {courseGoals.map((goal) =><View style={styles.listItem} ><Text key={goal}>{goal}</Text></View>)}
-      </View>
+      {/**ScrollView has some performance drawback as every element is rendered; we'd rather use another element for something potentially very long-use flatlist instead */}
+      {/**
+     *       <ScrollView>
+        {courseGoals.map((goal) => (
+          <View key={goal} style={styles.listItem}>
+            <Text>{goal}</Text>
+          </View>
+        ))}
+      </ScrollView>
+     */}
+
+      {/**FlatList expects an object with a key property; if we dont wanna use key, we'd need to use the key extractor prop */}
+      <FlatList
+        keyExtractor={(item, index) => item.id}
+        data={courseGoals}
+        renderItem={(itemData) => (
+          <View style={styles.listItem}>
+            <Text>{itemData.item.value}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 }
@@ -87,13 +119,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: "80%",
   },
-  listItem:{
-    padding:10,
-    backgroundColor:'#ccc',
-    borderBottomColor:'black',
-    borderWidth:1,
-    marginVertical:6
-
-
-  }
+  listItem: {
+    padding: 10,
+    backgroundColor: "#ccc",
+    borderBottomColor: "black",
+    borderWidth: 1,
+    marginVertical: 6,
+  },
 });
