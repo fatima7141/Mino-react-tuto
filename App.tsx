@@ -33,6 +33,7 @@ breaking down use state hooks:
  */
  
   const [courseGoals, setCourseGoals] = useState([] as any[]);
+  const [EnterGoal, setEnterGoal]=useState(false);
 
 
   const addGoalHandler = (goalTitle:any) => {
@@ -55,6 +56,8 @@ breaking down use state hooks:
         value: goalTitle,
       },
     ]); //flatLists require keys/objects
+    setEnterGoal(false)
+    
   };
 
   const removeGoalHandler=(goalId:String) =>{
@@ -72,8 +75,8 @@ breaking down use state hooks:
 
   return (
     <View style={styles.screen}>
-      <GoalInput onAddGoal={addGoalHandler}/>
-
+      <Button  title="Enter Goals" onPress={()=>setEnterGoal(true)} />
+      <GoalInput visible={EnterGoal} onAddGoal={addGoalHandler}/>
       {/**FlatList expects an object with a .key property; if we dont wanna use key, we'd need to use the key extractor prop */}
       <FlatList
         keyExtractor={(item, index) => item.id}
