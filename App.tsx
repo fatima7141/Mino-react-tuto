@@ -10,6 +10,8 @@ import {
   FlatList,
 } from "react-native";
 
+import GoalItem from "./components/Goaitem";
+import GoalInput from "./components/Goalinput";
 export default function App() {
   //functional component
   {
@@ -29,14 +31,12 @@ breaking down use state hooks:
     +we provide an array of states; the first one being the default one
     +to trigger a state change, we simply reassingn the second element of usestate's value  
  */
-  const [enteredGoal, setEnteredGoal] = useState("");
+ 
   const [courseGoals, setCourseGoals] = useState([] as any[]);
 
-  const inputHandler_Goal = (enteredText: any) => {
-    setEnteredGoal(enteredText);
-  }; //two way data binding
-  const addGoalHandler = () => {
-    console.log(enteredGoal);
+
+  const addGoalHandler = (goalTitle:any) => {
+    console.log(goalTitle);
     //setCourseGoals([...courseGoals, enteredGoal]); somehow bad implementation
     //we are trying to get the latest input in; function is triggered on click so no input
     //courseGoals will always take the former value of setCourseGoals
@@ -52,7 +52,7 @@ breaking down use state hooks:
       ...currentGoal,
       {
         id: Math.random().toString(),
-        value: enteredGoal,
+        value: goalTitle,
       },
     ]); //flatLists require keys/objects
   };
@@ -64,42 +64,13 @@ breaking down use state hooks:
 
   return (
     <View style={styles.screen}>
-      <View style={styles.inputContainer}>
-        {/*in react native, flexbox is triggered by default; layout is by default horizontal; use flex direction to change this
-         * Main axis depends on the flexDirection chosen (including direction)
-         * Child elements would be organized around the mani axis
-         * add the flex prop to the children to fully control the children propery (setup to control things inside of a flexBox)
-         * flex takes a relative number (relative to each children's flex prop) | flex:1
-         * alignItems positions elements along the cross axis (perpendicular to main axis)
-         */}
-        <TextInput
-          placeholder=" Course Goals"
-          style={styles.textInput}
-          onChangeText={inputHandler_Goal}
-          value={enteredGoal}
-        />
-        <Button title="ADD" onPress={addGoalHandler} />
-      </View>
-      {/**ScrollView has some performance drawback as every element is rendered; we'd rather use another element for something potentially very long-use flatlist instead */}
-      {/**
-     *       <ScrollView>
-        {courseGoals.map((goal) => (
-          <View key={goal} style={styles.listItem}>
-            <Text>{goal}</Text>
-          </View>
-        ))}
-      </ScrollView>
-     */}
+      <GoalInput onAddGoal={addGoalHandler}/>
 
-      {/**FlatList expects an object with a key property; if we dont wanna use key, we'd need to use the key extractor prop */}
+      {/**FlatList expects an object with a .key property; if we dont wanna use key, we'd need to use the key extractor prop */}
       <FlatList
         keyExtractor={(item, index) => item.id}
         data={courseGoals}
-        renderItem={(itemData) => (
-          <View style={styles.listItem}>
-            <Text>{itemData.item.value}</Text>
-          </View>
-        )}
+        renderItem={(itemData) => <GoalItem  title={itemData.item.value} />}
       />
     </View>
   );
@@ -108,16 +79,6 @@ const styles = StyleSheet.create({
   //creates a JS object
   screen: {
     padding: 50,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  textInput: {
-    borderBottomColor: "black",
-    borderWidth: 1,
-    width: "80%",
   },
   listItem: {
     padding: 10,
