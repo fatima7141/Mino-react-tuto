@@ -1,11 +1,15 @@
 import React from "react";  
-import { View, Text, StyleSheet} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, TouchableHighlight} from "react-native";
 const GoalItem= (props:any) =>{
     return (
-    <View style={styles.listItem}>
-        <Text>{props.title}</Text>
-      </View>)
+    <TouchableOpacity onPress={props.onDelete}>
+        <View style={styles.listItem}>
+            <Text>{props.title}</Text>
+        </View>
+    </TouchableOpacity>
+    )
 };//we'll pass the title from the component from which it was called like a function
+//many types of touchables
 
 const styles=StyleSheet.create({
     listItem: {

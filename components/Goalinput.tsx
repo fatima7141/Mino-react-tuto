@@ -25,6 +25,7 @@ const GoalInput=(props:any)=>{
         <Button title="AD" onPress={()=>props.onAddGoal(enteredGoal)} />
       </View>
     )
+    {/**onAddGoal exists on app.tsx; we simply pass a variable to it here */}
     {/**anonymous function is used here so that the function doesn't trigger on render */}
     {/**props is used to pass a data declared in its template to that component */}
     {/**ScrollView has some performance drawback as every element is rendered; we'd rather use another element for something potentially very long-use flatlist instead */}

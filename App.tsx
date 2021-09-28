@@ -56,6 +56,14 @@ breaking down use state hooks:
       },
     ]); //flatLists require keys/objects
   };
+
+  const removeGoalHandler=(goalId:String) =>{
+    //we'll apply changes to the array countaining the goals
+    setCourseGoals((currentGoals)=>{
+      return currentGoals.filter((goal)=> goal.id !== goalId);//filter yields a new array based on a certain criteria 
+    })//filter syntax here; we pass the condition on which to drop elements
+    //the function would receive the id and then drop the element based on the id
+  }
   /**
    * So courseGoal would be an empty array at first
    * spread operator unloads all the contents of an interrable
@@ -70,7 +78,9 @@ breaking down use state hooks:
       <FlatList
         keyExtractor={(item, index) => item.id}
         data={courseGoals}
-        renderItem={(itemData) => <GoalItem  title={itemData.item.value} />}
+        renderItem={(itemData) => <GoalItem  
+          onDelete={()=>removeGoalHandler(itemData.item.id)} 
+          title={itemData.item.value} />}
       />
     </View>
   );
